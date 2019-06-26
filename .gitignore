@@ -1,3 +1,5 @@
 # No binary files in here blajsi
 *.fits
 *.gz
+
+.ipynb_checkpoints/
