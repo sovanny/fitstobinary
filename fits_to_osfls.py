@@ -6,6 +6,7 @@ from astropy.time import Time
 
 ################## EXTRACT TIMESTAMPS AND SAVE FILEPATHS #########################
 
+rootpath = "/Volumes/OPENSPACE/FITS-files/PSP_1st_perihelion_Samantha/"
 writepath = "./" # set output rootfolder
 # set names of file types and output folder names
 PFSS_IO = "PFSS_IO"
@@ -14,7 +15,10 @@ SCS_OI = "SCS_OI"
 WSA_OUT = "WSA_OUT"
 WSA_VEL = "WSA_VEL"
 
-SUB_EARTH = "SUB_EARTH"
+# Name of Sub-Satellite points, and folder for that set
+# Could be sub-earth, or sub-satellite, depending on the data set!
+sub_satellite_name = 'Sub-Satellite (PSP) points'
+SUB_SATELLITE = "SUB_SATELLITE"
 
 def populatefiles(folderpath, fileending, daterange, type):
     for (dirpath, dirnames, filenames) in walk(folderpath):
@@ -32,10 +36,9 @@ def populatefiles(folderpath, fileending, daterange, type):
 # But the script works for a single timestep as well.
 # Enter parameters: folderpath, fileending, indices for timestamp in filename, filetype
 fitsfilesdates = {} 
-rootpath = "/Volumes/OPENSPACE/WSA_OUT_FIELDLINES_SEPMOD/"
-populatefiles(rootpath + "trace_pfss_intoout",'fits.gz' , (0,12), PFSS_IO) # PFSS_IO has to be populated first
-populatefiles(rootpath + "trace_pfss_outtoin", 'fits.gz', (0,12), PFSS_OI)
-populatefiles(rootpath + "trace_scs_outtoin", 'fits.gz' , (0,12), SCS_OI)
+populatefiles(rootpath + "trace_pfss_intoout",'fits' , (0,12), PFSS_IO) # PFSS_IO has to be populated first
+populatefiles(rootpath + "trace_pfss_outtoin", 'fits', (0,12), PFSS_OI)
+populatefiles(rootpath + "trace_scs_outtoin", 'fits' , (0,12), SCS_OI)
 populatefiles(rootpath + "WSA_OUT"          , 'fits'    , (4,16), WSA_OUT)
 populatefiles(rootpath + "WSA_VEL"          , 'fits'    , (4,16), WSA_VEL)
 
@@ -393,7 +396,7 @@ def mergeAndConvertToOsfls(filepathPFSS, filepathSCS):
     extraQuantities = extraQuantities_polarity
     extraQuantities.extend(extraQuantities_level)
 
-    extraQuantityNames = ['Polarity \0', 'Sub-Earth points \0']
+    extraQuantityNames = ['Polarity \0', sub_satellite_name + ' \0']
 
     nStringBytes = sum([len(s) for s in extraQuantityNames])
     allNamesInOne = ''
@@ -409,7 +412,7 @@ def mergeAndConvertToOsfls(filepathPFSS, filepathSCS):
     buffer = ctypes.create_string_buffer(struct_to_write.size)    
     struct_to_write.pack_into(buffer, 0, *values_to_write)
     
-    fout = open(writepath + SUB_EARTH + '/' + filepath, 'wb')
+    fout = open(writepath + SUB_SATELLITE + '/' + filepath, 'wb')
     fout.write(buffer)
     fout.close()
 # end def mergeAndConvertToOsfls()
@@ -423,7 +426,7 @@ makedirs(writepath + PFSS_IO, exist_ok=True)
 makedirs(writepath + PFSS_OI, exist_ok=True)
 makedirs(writepath + SCS_OI, exist_ok=True)
 makedirs(writepath + WSA_OUT, exist_ok=True)
-makedirs(writepath + SUB_EARTH, exist_ok=True)
+makedirs(writepath + SUB_SATELLITE, exist_ok=True)
 
 # relies heavily on having a sorted list of files for each timestep
 # so that pfss_io goes first and picks out the lines
