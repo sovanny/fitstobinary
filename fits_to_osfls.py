@@ -17,8 +17,8 @@ WSA_VEL = "WSA_VEL"
 
 # Name of Sub-Satellite points, and folder for that set
 # Could be sub-earth, or sub-satellite, depending on the data set!
-sub_satellite_name = 'Sub-Satellite (PSP) points'
-SUB_SATELLITE = "SUB_SATELLITE"
+sub_satellite_name = 'Sub-Earth points'
+SUB_SATELLITE = "SUB_EARTH"
 
 def populatefiles(folderpath, fileending, daterange, type):
     for (dirpath, dirnames, filenames) in walk(folderpath):
